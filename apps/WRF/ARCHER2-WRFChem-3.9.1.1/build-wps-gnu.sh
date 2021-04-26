@@ -44,10 +44,15 @@ export JASPERINC=${JASPER_ROOT}/include
 3
 EOF
 
+# simplfying the compiler choices, to use cc and ftn (which call the same compilers, but apply system specific flags)
 sed -i -e 's/mpicc -cc=gcc/cc/'     configure.wps
 sed -i -e 's/mpif90 -f90=gfortran/ftn/'   configure.wps
 sed -i -e 's/gcc/cc/'       configure.wps
 sed -i -e 's/gfortran/ftn/' configure.wps
+
+# applying this fix for mismatched integer kinds:
+# https://github.com/wrf-model/WPS/pull/119
+sed -i -e '172 s/i-1)/i-1_2)/' -e '207 s/i-1)/i-1_1)/' ungrib/src/ngl/g2/intmath.f
 
 # Compile
 
